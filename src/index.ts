@@ -29,7 +29,8 @@ app.use(cors({
   credentials: true,
 }));
 
-app.options("/*", cors()); // Enable pre-flight for all routes
+app.options(/.*/, cors());
+ // Enable pre-flight for all routes
 
 
 // Middleware
