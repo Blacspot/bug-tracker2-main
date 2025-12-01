@@ -61,7 +61,7 @@ export const getPool = async (): Promise<sql.ConnectionPool> => {
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     try {
       await pool.connect();
-      console.log("\x1b[32m[DB]\x1b[0m ✅ Connected successfully to MSSQL");
+      console.log("\x1b[32m[DB]\x1b[0m  Connected successfully to MSSQL");
       return pool;
     } catch (error: any) {
       const code = error.code || "UNKNOWN";
