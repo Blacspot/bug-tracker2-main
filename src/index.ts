@@ -1,5 +1,6 @@
 import dotenv from 'dotenv';
 import express from 'express';
+import cors from 'cors';
 import { getPool } from '../db/config';
 import bugRoutes from './routes/bug.routes';
 import commentRoutes from './routes/comments.routes';
@@ -11,6 +12,7 @@ dotenv.config();
 
 // Middleware
 app.use(express.json());
+app.use(cors({ origin: 'http://localhost:5173' }));
 
 const PORT = process.env.PORT || 8081;
 
@@ -35,7 +37,7 @@ app.get('/', (req, res) => {
     });
 });
 
-app.listen(3000, async () => {
+app.listen(PORT, async () => {
     console.log("Starting server...");
     try {
         const dbConnected = await getPool();
