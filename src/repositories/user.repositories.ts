@@ -46,13 +46,18 @@ export class UserRepository {
   // Create new user
   static async createUser(userData: CreateUser): Promise<User> {
     try {
+      const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+      const codeExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
       const pool: sql.ConnectionPool = await getPool();
       const result = await pool.request()
         .input('username', userData.Username)
         .input('email', userData.Email)
         .input('passwordHash', userData.PasswordHash)
         .input('role', userData.Role || 'User')
-        .query('INSERT INTO Users (Username, Email, PasswordHash, Role) OUTPUT INSERTED.* VALUES (@username, @email, @passwordHash, @role)');
+        .input('isVerified', 0)
+        .input('verificationCode', verificationCode)
+        .input('codeExpiry', codeExpiry)
+        .query('INSERT INTO Users (Username, Email, PasswordHash, Role, IsVerified, VerificationCode, CodeExpiry) OUTPUT INSERTED.* VALUES (@username, @email, @passwordHash, @role, @isVerified, @verificationCode, @codeExpiry)');
       return result.recordset[0];
     } catch (error) {
       console.error('Error creating user:', error);
@@ -102,6 +107,42 @@ export class UserRepository {
       return result.recordset[0] || null;
     } catch (error) {
       console.error('Error updating user:', error);
+      throw error;
+    }
+  }
+
+  // Verify user code
+  static async verifyUserCode(email: string, code: string): Promise<boolean> {
+    try {
+      const user = await this.getUserByEmail(email);
+      if (!user || user.VerificationCode !== code || !user.CodeExpiry || new Date(user.CodeExpiry) < new Date()) {
+        return false;
+      }
+      const pool: sql.ConnectionPool = await getPool();
+      await pool.request()
+        .input('email', email.toLowerCase())
+        .query('UPDATE Users SET IsVerified = 1, VerificationCode = NULL, CodeExpiry = NULL WHERE LOWER(Email) = LOWER(@email)');
+      return true;
+    } catch (error) {
+      console.error('Error verifying user code:', error);
+      throw error;
+    }
+  }
+
+  // Resend verification code
+  static async resendVerificationCode(email: string): Promise<{code: string, expiry: Date}> {
+    try {
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+      const expiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
+      const pool: sql.ConnectionPool = await getPool();
+      await pool.request()
+        .input('email', email.toLowerCase())
+        .input('code', code)
+        .input('expiry', expiry)
+        .query('UPDATE Users SET VerificationCode = @code, CodeExpiry = @expiry WHERE LOWER(Email) = LOWER(@email)');
+      return { code, expiry };
+    } catch (error) {
+      console.error('Error resending verification code:', error);
       throw error;
     }
   }

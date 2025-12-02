@@ -97,3 +97,7 @@ SELECT * FROM Bugs;
 SELECT * FROM Comments;
 
 -- ...existing code...
+-- Add verification columns to Users table
+ALTER TABLE Users ADD IsVerified BIT DEFAULT 0;
+ALTER TABLE Users ADD VerificationCode VARCHAR(6);
+ALTER TABLE Users ADD CodeExpiry DATETIME;

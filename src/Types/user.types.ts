@@ -5,6 +5,9 @@ export interface User {
   PasswordHash: string;
   Role: string;
   CreatedAt: Date;
+  IsVerified?: boolean;
+  VerificationCode?: string;
+  CodeExpiry?: Date;
 }
 
 export interface CreateUser {
@@ -12,6 +15,9 @@ export interface CreateUser {
   Email: string;
   PasswordHash: string;
   Role?: string;
+  IsVerified?: boolean;
+  VerificationCode?: string;
+  CodeExpiry?: Date;
 }
 
 export interface UpdateUser {
@@ -19,4 +25,7 @@ export interface UpdateUser {
   Email?: string;
   PasswordHash?: string;
   Role?: string;
+  IsVerified?: boolean;
+  VerificationCode?: string;
+  CodeExpiry?: Date;
 }

@@ -4,6 +4,7 @@ import { Request } from 'express';
 import jwt from 'jsonwebtoken';
 import { CreateUser, UpdateUser, User } from '../Types/user.types';
 import { UserRepository } from '../repositories/user.repositories';
+import { sendVerificationEmail } from './email.services';
 import { request } from 'http';
 
 // Get all users
@@ -67,6 +68,9 @@ export const createUser = async (userData: any) => {
     // Create the user
     const createdUser = await UserRepository.createUser(newUser);
 
+    // Send verification email
+    await sendVerificationEmail(createdUser.Email, createdUser.VerificationCode!);
+
     // Remove password hash from response
     const { PasswordHash, ...userResponse } = createdUser;
     return userResponse;
@@ -90,6 +94,11 @@ export const loginUser = async (email: string, password: string) => {
         throw new Error("Invalid email or password");
     }
 
+    // Check if user is verified
+    if (user.IsVerified !== true) {
+        throw new Error("Email not verified");
+    }
+
     // Generate JWT token
     const token = jwt.sign(
         {
@@ -105,6 +114,17 @@ export const loginUser = async (email: string, password: string) => {
     const { PasswordHash, ...userResponse } = user;
 
     return { token, user: userResponse };
+}
+
+// Verify email
+export const verifyEmail = async (email: string, code: string): Promise<boolean> => {
+    return await UserRepository.verifyUserCode(email, code);
+}
+
+// Resend verification email
+export const resendVerificationEmail = async (email: string): Promise<void> => {
+    const { code } = await UserRepository.resendVerificationCode(email);
+    await sendVerificationEmail(email, code);
 }
 
 // Delete user
