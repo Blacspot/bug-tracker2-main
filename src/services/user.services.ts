@@ -68,12 +68,24 @@ export const createUser = async (userData: any) => {
     // Create the user
     const createdUser = await UserRepository.createUser(newUser);
 
-    // Send verification email
-    await sendVerificationEmail(createdUser.Email, createdUser.VerificationCode!);
+    // Send verification email (with fallback)
+    let emailStatus = 'sent';
+    try {
+        await sendVerificationEmail(createdUser.Email, createdUser.VerificationCode!);
+        console.log('Verification email sent successfully to:', createdUser.Email);
+    } catch (emailError: any) {
+        console.warn('Failed to send verification email:', emailError?.message || emailError);
+        emailStatus = 'failed';
+    }
 
     // Remove password hash from response
     const { PasswordHash, ...userResponse } = createdUser;
-    return userResponse;
+    
+    return {
+        ...userResponse,
+        verificationCode: emailStatus === 'failed' ? createdUser.VerificationCode : null,
+        emailStatus: emailStatus
+    };
 }
 
 // Login user
@@ -95,9 +107,9 @@ export const loginUser = async (email: string, password: string) => {
     }
 
     // Check if user is verified
-    if (user.IsVerified !== true) {
-        throw new Error("Email not verified");
-    }
+    //if (user.IsVerified !== true) {
+       // throw new Error("Email not verified");
+    //}
 
     // Generate JWT token
     const token = jwt.sign(

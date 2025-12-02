@@ -54,7 +54,7 @@ export const loginUserController = async (req: Request, res: Response) => {
 // Get current user profile
 export const getUserProfileController = async (req: Request, res: Response) => {
     try {
-        const userId = (req as any).user?.userId; // From auth middleware
+        const userId = req.user?.userId; // From auth middleware
         if (!userId) {
             return res.status(401).json({ message: "Unauthorized" });
         }
@@ -93,13 +93,13 @@ export const updateUserProfileController = async (req: Request, res: Response) =
 // Update user password
 export const updateUserPasswordController = async (req: Request, res: Response) => {
     try {
-        const userId = (req as any).user?.userId; // From auth middleware
+        const userId = req.user?.userId; // From auth middleware
         if (!userId) {
             return res.status(401).json({ message: "Unauthorized" });
         }
         const { currentPassword, newPassword } = req.body;
         await updateUserPassword(userId, currentPassword, newPassword);
-        res.status(204).json({ message: "Password updated successfully" });
+        res.status(200).json({ message: "Password updated successfully" });
     } catch (error: any) {
         handleControllerError(error, res);
     }
