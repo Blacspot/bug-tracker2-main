@@ -4,7 +4,6 @@ import { Request } from 'express';
 import jwt from 'jsonwebtoken';
 import { CreateUser, UpdateUser, User } from '../Types/user.types';
 import { UserRepository } from '../repositories/user.repositories';
-import { sendVerificationEmail } from './email.services';
 import { request } from 'http';
 
 // Get all users
@@ -68,24 +67,10 @@ export const createUser = async (userData: any) => {
     // Create the user
     const createdUser = await UserRepository.createUser(newUser);
 
-    // Send verification email (with fallback)
-    let emailStatus = 'sent';
-    try {
-        await sendVerificationEmail(createdUser.Email, createdUser.VerificationCode!);
-        console.log('Verification email sent successfully to:', createdUser.Email);
-    } catch (emailError: any) {
-        console.warn('Failed to send verification email:', emailError?.message || emailError);
-        emailStatus = 'failed';
-    }
-
     // Remove password hash from response
     const { PasswordHash, ...userResponse } = createdUser;
-    
-    return {
-        ...userResponse,
-        verificationCode: emailStatus === 'failed' ? createdUser.VerificationCode : null,
-        emailStatus: emailStatus
-    };
+
+    return userResponse;
 }
 
 // Login user
@@ -106,11 +91,6 @@ export const loginUser = async (email: string, password: string) => {
         throw new Error("Invalid email or password");
     }
 
-      //Check if user is verified
-    if (user.IsVerified !== true) {
-      throw new Error("Email not verified");
-    }
-
     // Generate JWT token
     const token = jwt.sign(
         {
@@ -128,15 +108,14 @@ export const loginUser = async (email: string, password: string) => {
     return { token, user: userResponse };
 }
 
-// Verify email
+// Verify email (disabled - always returns true)
 export const verifyEmail = async (email: string, code: string): Promise<boolean> => {
-    return await UserRepository.verifyUserCode(email, code);
+    return true;
 }
 
-// Resend verification email
+// Resend verification email (disabled - does nothing)
 export const resendVerificationEmail = async (email: string): Promise<void> => {
-    const { code } = await UserRepository.resendVerificationCode(email);
-    await sendVerificationEmail(email, code);
+    // Email verification disabled
 }
 
 // Delete user

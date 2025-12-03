@@ -46,18 +46,14 @@ export class UserRepository {
   // Create new user
   static async createUser(userData: CreateUser): Promise<User> {
     try {
-      const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-      const codeExpiry = new Date(Date.now() + 24 * 60 * 60 * 1000);
       const pool: sql.ConnectionPool = await getPool();
       const result = await pool.request()
         .input('username', userData.Username)
         .input('email', userData.Email)
         .input('passwordHash', userData.PasswordHash)
         .input('role', userData.Role || 'User')
-        .input('isVerified', 0)
-        .input('verificationCode', verificationCode)
-        .input('codeExpiry', codeExpiry)
-        .query('INSERT INTO Users (Username, Email, PasswordHash, Role, IsVerified, VerificationCode, CodeExpiry) OUTPUT INSERTED.* VALUES (@username, @email, @passwordHash, @role, @isVerified, @verificationCode, @codeExpiry)');
+        .input('isVerified', 1)
+        .query('INSERT INTO Users (Username, Email, PasswordHash, Role, IsVerified) OUTPUT INSERTED.* VALUES (@username, @email, @passwordHash, @role, @isVerified)');
       return result.recordset[0];
     } catch (error) {
       console.error('Error creating user:', error);

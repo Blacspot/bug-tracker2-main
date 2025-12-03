@@ -23,12 +23,6 @@ const userRoutes = (app:Express) => {
 
     // DELETE /users/:id - Delete user
     app.delete('/users/:id', userController.deleteUserController);
-
-    // POST /users/resend-verification - Resend verification email
-    app.post('/users/resend-verification', userController.resendVerificationEmailController);
-
-    // POST /users/verify-email - Verify email
-    app.post('/users/verify-email', userController.verifyEmailController);
 }
 
 export default userRoutes;
