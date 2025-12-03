@@ -5,28 +5,28 @@ let transporter: Transporter | null = null;
 
 function getTransporter(): Transporter {
   if (!transporter) {
-    // Validate required environment variables
-    if (!process.env.EMAIL_HOST || !process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    // Validate required environment variables for Brevo
+    if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
       console.error('Email configuration missing:', {
-        EMAIL_HOST: process.env.EMAIL_HOST ? 'set' : 'missing',
-        EMAIL_USER: process.env.EMAIL_USER ? 'set' : 'missing',
-        EMAIL_PASS: process.env.EMAIL_PASS ? 'set' : 'missing',
-        EMAIL_FROM: process.env.EMAIL_FROM ? 'set' : 'missing',
+        SMTP_HOST: process.env.SMTP_HOST ? 'set' : 'missing',
+        SMTP_USER: process.env.SMTP_USER ? 'set' : 'missing',
+        SMTP_PASS: process.env.SMTP_PASS ? 'set' : 'missing',
+        FROM_EMAIL: process.env.FROM_EMAIL ? 'set' : 'missing',
       });
-      throw new Error('Email configuration is incomplete. Please check EMAIL_HOST, EMAIL_USER, and EMAIL_PASS environment variables.');
+      throw new Error('Email configuration is incomplete. Please check SMTP_HOST, SMTP_USER, and SMTP_PASS environment variables.');
     }
 
     transporter = nodemailer.createTransport({
-      host: process.env.EMAIL_HOST,
-      port: parseInt(process.env.EMAIL_PORT || '587'),
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.SMTP_PORT || '587'),
       secure: false, // true for 465, false for other ports
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
       },
     });
 
-    console.log('Email transporter created successfully with host:', process.env.EMAIL_HOST);
+    console.log('Email transporter created successfully with host:', process.env.SMTP_HOST);
   }
   return transporter;
 }
@@ -36,7 +36,7 @@ export async function sendVerificationEmail(email: string, code: string): Promis
     const mailTransporter = getTransporter();
     
     const mailOptions = {
-      from: process.env.EMAIL_FROM || process.env.EMAIL_USER,
+      from: process.env.FROM_EMAIL || process.env.SMTP_USER,
       to: email,
       subject: 'Verification Code',
       text: `Your verification code is: ${code}`,
