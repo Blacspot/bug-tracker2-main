@@ -106,10 +106,10 @@ export const loginUser = async (email: string, password: string) => {
         throw new Error("Invalid email or password");
     }
 
-    // Check if user is verified
+      //Check if user is verified
     //if (user.IsVerified !== true) {
-       // throw new Error("Email not verified");
-    //}
+     //   throw new Error("Email not verified");
+   // }
 
     // Generate JWT token
     const token = jwt.sign(
