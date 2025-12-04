@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { AuthRequest } from '../middleware/auth.middleware';
 import {
     getAllUsers,
     createUser,
@@ -50,7 +51,7 @@ export const loginUserController = async (req: Request, res: Response) => {
 };
 
 // Get current user profile
-export const getUserProfileController = async (req: Request, res: Response) => {
+export const getUserProfileController = async (req: AuthRequest, res: Response) => {
     try {
         const userId = req.user?.userId; // From auth middleware
         if (!userId) {
@@ -89,7 +90,7 @@ export const updateUserProfileController = async (req: Request, res: Response) =
 };
 
 // Update user password
-export const updateUserPasswordController = async (req: Request, res: Response) => {
+export const updateUserPasswordController = async (req: AuthRequest, res: Response) => {
     try {
         const userId = req.user?.userId; // From auth middleware
         if (!userId) {

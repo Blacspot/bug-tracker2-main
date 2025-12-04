@@ -1,6 +1,6 @@
 import type { Express } from "express";
 import * as userController from "../controllers/user.controller";
-import { authenticateToken } from "../middleware/auth.middleware";
+import { authenticateJWT } from "../middleware/auth.middleware";
 
 const userRoutes = (app:Express) => {
     // GET /users - Get all users
@@ -13,13 +13,13 @@ const userRoutes = (app:Express) => {
     app.post('/users/login', userController.loginUserController);
 
     // GET /users/profile - Get current user profile
-    app.get('/users/profile', authenticateToken, userController.getUserProfileController);
+    app.get('/users/profile', authenticateJWT, userController.getUserProfileController);
 
     // PUT /users/profile - Update user profile
     app.put('/users/profile', userController.updateUserProfileController);
 
     // PUT /users/change-password - Change password
-    app.put('/users/change-password', authenticateToken, userController.updateUserPasswordController);
+    app.put('/users/change-password', authenticateJWT, userController.updateUserPasswordController);
 
     // DELETE /users/:id - Delete user
     app.delete('/users/:id', userController.deleteUserController);

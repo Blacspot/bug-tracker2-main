@@ -1,5 +1,7 @@
 import type { Express } from "express";
 import * as projectController from "../controllers/project.controller";
+import { authenticateJWT } from "../middleware/auth.middleware";
+import { authorizeRole } from "../middleware/role.middleware";
 
 const projectRoutes = (app:Express) => {
     // GET /projects - Retrieve all projects
@@ -11,8 +13,8 @@ const projectRoutes = (app:Express) => {
     // GET /projects/creator/:creatorId - Retrieve projects by creator
     app.get('/projects/creator/:creatorId', projectController.getProjectsByCreatorController);
 
-    // POST /projects - Create a new project
-    app.post('/projects', projectController.createProjectController);
+    // POST /projects - Create a new project (Admin only)
+    app.post('/projects', authenticateJWT, authorizeRole('Admin'), projectController.createProjectController);
 
     // PUT /projects/:id - Update an existing project
     app.put('/projects/:id', projectController.updateProjectController);

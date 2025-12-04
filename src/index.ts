@@ -6,6 +6,7 @@ import bugRoutes from './routes/bug.routes';
 import commentRoutes from './routes/comments.routes';
 import projectRoutes from './routes/projects.routes';
 import userRoutes from './routes/user.routes';
+import adminRoutes from './routes/admin.routes';
 
 const  app = express();
 dotenv.config();
@@ -46,6 +47,8 @@ bugRoutes(app);
 commentRoutes(app);
 projectRoutes(app);
 userRoutes(app);
+
+app.use('/api/admin', adminRoutes);
 
 // Root route
 app.get('/', (req, res) => {
