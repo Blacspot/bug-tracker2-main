@@ -15,8 +15,8 @@ const userRoutes = (app:Express) => {
     // GET /users/profile - Get current user profile
     app.get('/users/profile', authenticateJWT, userController.getUserProfileController);
 
-    // PUT /users/profile - Update user profile
-    app.put('/users/profile', userController.updateUserProfileController);
+    // PUT /users/profile/:UserID - Update user profile
+    app.put('/users/profile/:UserID', userController.updateUserProfileController);
 
     // PUT /users/change-password - Change password
     app.put('/users/change-password', authenticateJWT, userController.updateUserPasswordController);

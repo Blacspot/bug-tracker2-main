@@ -73,9 +73,9 @@ export const updateUserProfileController = async (req: Request, res: Response) =
         }
 
         const updateData = {
-            Username: req.body.username,
-            Email: req.body.email,
-            Role: req.body.role
+            Username: req.body.Username,
+            Email: req.body.Email,
+            Role: req.body.Role
         };
 
         const updatedUser = await updateUserProfile(userId, updateData);
