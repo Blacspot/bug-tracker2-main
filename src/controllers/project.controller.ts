@@ -16,6 +16,7 @@ import {
     getAllProjects,
     getProjectById,
     getProjectsByCreator,
+    getProjectsByMember,
     createProject,
     updateProject,
     deleteProject
@@ -77,6 +78,26 @@ export const getProjectsByCreatorController = async (req: Request, res: Response
     try {
         const creatorId = parseInt(req.params.creatorId);
         const projects = await getProjectsByCreator(creatorId);
+        res.json({ projects });
+    } catch (error: any) {
+        handleControllerError(error, res);
+    }
+};
+
+/**
+ * GET /projects/member/:userId - Retrieve projects by member
+ *
+ * Returns all projects where a specific user is assigned as a member.
+ * Essential for user dashboards to show active project assignments.
+ * Helps users see their current project responsibilities and workload.
+ *
+ * @param req - Express request object with userId in params
+ * @param res - Express response object
+ */
+export const getProjectsByMemberController = async (req: Request, res: Response) => {
+    try {
+        const userId = parseInt(req.params.userId);
+        const projects = await getProjectsByMember(userId);
         res.json({ projects });
     } catch (error: any) {
         handleControllerError(error, res);

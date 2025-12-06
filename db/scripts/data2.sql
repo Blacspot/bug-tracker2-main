@@ -28,7 +28,7 @@ CREATE TABLE Users (
     Username VARCHAR(100) NOT NULL,
     Email VARCHAR(150) UNIQUE NOT NULL,
     PasswordHash VARCHAR(255) NOT NULL,
-    Role VARCHAR(50) DEFAULT 'User', -- Admin | Developer | QA | User
+    Role VARCHAR(50) DEFAULT 'user', -- admin | developer | qa | user
     IsVerified BIT DEFAULT 0,
     VerificationCode VARCHAR(6),
     CodeExpiry DATETIME,
@@ -105,10 +105,10 @@ CREATE TABLE Comments (
 -----------------------------
 INSERT INTO Users (Username, Email, PasswordHash, Role, IsVerified)
 VALUES
-('LukeMbogo', 'luke@example.com', '$2b$10$wgDVqgCejackN3xN65SQNOESZ/kt5MCzuiFOo6svUjj3aEJ0Sg0hK', 'Admin', 1),
-('JaneDoe', 'jane@example.com', '$2b$10$8y3BnspYYVkRmZrxldBQBO1AM0CQZVqLSNHSa5r/iv3uEYMK4UreW', 'Developer', 1),
-('JohnDev', 'john@example.com', '$2b$10$P6/huKYGMapWko9I04qMveQRkQISFRLwMuWWGOPX1YgJL034M57Ou', 'Tester', 1),
-('SarahQA', 'sarah@example.com', '$2b$10$pwYhqZoYJ2oN8/41BGWeNe.ci.fUQkpNKRl6PlI0E/v3f7XGynNTe', 'QA Engineer', 1);
+('LukeMbogo', 'luke@example.com', '$2b$10$wgDVqgCejackN3xN65SQNOESZ/kt5MCzuiFOo6svUjj3aEJ0Sg0hK', 'admin', 1),
+('JaneDoe', 'jane@example.com', '$2b$10$8y3BnspYYVkRmZrxldBQBO1AM0CQZVqLSNHSa5r/iv3uEYMK4UreW', 'developer', 1),
+('JohnDev', 'john@example.com', '$2b$10$P6/huKYGMapWko9I04qMveQRkQISFRLwMuWWGOPX1YgJL034M57Ou', 'tester', 1),
+('SarahQA', 'sarah@example.com', '$2b$10$pwYhqZoYJ2oN8/41BGWeNe.ci.fUQkpNKRl6PlI0E/v3f7XGynNTe', 'qa engineer', 1);
 
 
 -----------------------------

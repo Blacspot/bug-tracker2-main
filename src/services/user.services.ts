@@ -48,7 +48,7 @@ const validateAndParseCredentials = async (body:any): Promise<CreateUser> => {
      Username: trimmedUsername,
      Email: trimmedEmail,
      PasswordHash: passwordHash,
-     Role: role && typeof role === 'string' ? role : 'User'
+     Role: role && typeof role === 'string' ? role.toLowerCase() : 'user'
  }
 }
 
@@ -171,7 +171,7 @@ export const updateUserProfile = async (id: number, updateData: UpdateUser) => {
         if (typeof updateData.Role !== 'string') {
             throw new Error("Invalid role");
         }
-        validatedData.Role = updateData.Role;
+        validatedData.Role = updateData.Role.toLowerCase();
     }
 
     // Note: PasswordHash should not be updated here; use changePassword instead

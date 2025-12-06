@@ -1,5 +1,5 @@
 import { getPool } from '../../db/config';
-import { Project, CreateProject, UpdateProject } from '../Types/projects.types';
+import { Project, CreateProject, UpdateProject, ProjectMember, CreateProjectMember } from '../Types/projects.types';
 import * as sql from 'mssql';
 
 export class ProjectRepository {
@@ -39,6 +39,25 @@ export class ProjectRepository {
       return result.recordset;
     } catch (error) {
       console.error('Error fetching projects by creator:', error);
+      throw error;
+    }
+  }
+
+  // Get projects by member (projects where user is assigned)
+  static async getProjectsByMember(userId: number): Promise<Project[]> {
+    try {
+      const pool: sql.ConnectionPool = await getPool();
+      const result = await pool.request()
+        .input('userId', userId)
+        .query(`
+          SELECT p.* FROM Projects p
+          INNER JOIN ProjectMembers pm ON p.ProjectID = pm.ProjectID
+          WHERE pm.UserID = @userId
+          ORDER BY p.CreatedAt DESC
+        `);
+      return result.recordset;
+    } catch (error) {
+      console.error('Error fetching projects by member:', error);
       throw error;
     }
   }

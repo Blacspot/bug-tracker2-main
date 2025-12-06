@@ -16,3 +16,16 @@ export interface UpdateProject {
   ProjectName?: string;
   Description?: string;
 }
+
+export interface ProjectMember {
+  ID: number;
+  ProjectID: number;
+  UserID: number;
+  RoleInProject: string;
+}
+
+export interface CreateProjectMember {
+  ProjectID: number;
+  UserID: number;
+  RoleInProject?: string;
+}

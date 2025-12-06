@@ -85,6 +85,21 @@ export const getProjectsByCreator = async (creatorId: number): Promise<Project[]
     }
 };
 
+// Get projects by member (projects where user is assigned)
+export const getProjectsByMember = async (userId: number): Promise<Project[]> => {
+    try {
+        if (isNaN(userId)) {
+            throw new Error('Invalid user ID');
+        }
+
+        const projects: Project[] = await ProjectRepository.getProjectsByMember(userId);
+        return projects;
+    } catch (error: any) {
+        console.error('Error fetching projects by member:', error);
+        throw error;
+    }
+};
+
 // Create new project
 export const createProject = async (projectData: any): Promise<Project> => {
     console.log("Project received", projectData);
