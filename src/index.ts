@@ -70,6 +70,7 @@ app.listen(PORT, async () => {
         const dbConnected = await getPool();
         if(dbConnected){
             console.log(`Server is running on http://localhost:${PORT}`);
+            
             console.log("Database connected Successfully");
         }
         else{

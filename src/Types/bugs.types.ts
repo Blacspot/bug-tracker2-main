@@ -8,6 +8,7 @@ export interface Bug {
   ReportedBy: number | null;
   AssignedTo: number | null;
   CreatedAt: Date;
+  CommentCount?: number;
 }
 
 export interface CreateBug {

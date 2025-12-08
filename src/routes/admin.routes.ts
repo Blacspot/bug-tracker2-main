@@ -6,6 +6,7 @@ import { getAllUsers, deleteUser } from '../services/user.services';
 import { getAllProjects, deleteProject } from '../services/projects.services';
 import { getAllBugs, deleteBug } from '../services/bug.services';
 import { createProjectController } from '../controllers/project.controller';
+import { getDashboardData } from '../services/admin.services';
 
 const router = Router();
 
@@ -73,6 +74,16 @@ router.delete('/bugs/:id', authenticateJWT, authorizeRole('admin'), async (req, 
     const success = await deleteBug(bugId);
     if (!success) return res.status(404).json({ message: 'Bug not found' });
     res.json({ message: 'Bug deleted successfully' });
+  } catch (error: any) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+// Admin-only: Get dashboard data
+router.get('/dashboard', authenticateJWT, authorizeRole('admin'), async (req, res) => {
+  try {
+    const dashboardData = await getDashboardData();
+    res.json(dashboardData);
   } catch (error: any) {
     res.status(500).json({ message: error.message });
   }

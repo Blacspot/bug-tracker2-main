@@ -4,8 +4,8 @@ import { authenticateJWT } from "../middleware/auth.middleware";
 import { authorizeRole } from "../middleware/role.middleware";
 
 const projectRoutes = (app:Express) => {
-    // GET /projects - Retrieve all projects
-    app.get('/projects', projectController.getAllProjectsController);
+    // GET /projects - Retrieve all projects (Admin only)
+    app.get('/projects', authenticateJWT, authorizeRole('admin'), projectController.getAllProjectsController);
 
     // GET /projects/:id - Retrieve a specific project by ID
     app.get('/projects/:id', projectController.getProjectByIdController);
@@ -22,8 +22,8 @@ const projectRoutes = (app:Express) => {
     // PUT /projects/:id - Update an existing project
     app.put('/projects/:id', projectController.updateProjectController);
 
-    // DELETE /projects/:id - Delete a project
-    app.delete('/projects/:id', projectController.deleteProjectController);
+    // DELETE /projects/:id - Delete a project (Admin only)
+    app.delete('/projects/:id', authenticateJWT, authorizeRole('admin'), projectController.deleteProjectController);
 }
 
 export default projectRoutes;

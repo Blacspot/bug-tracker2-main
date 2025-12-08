@@ -1,10 +1,11 @@
 import type { Express } from "express";
 import * as userController from "../controllers/user.controller";
 import { authenticateJWT } from "../middleware/auth.middleware";
+import { authorizeRole } from "../middleware/role.middleware";
 
 const userRoutes = (app:Express) => {
-    // GET /users - Get all users
-    app.get('/users', userController.getAllUsersController);
+    // GET /users - Get all users (Admin only)
+    app.get('/users', authenticateJWT, authorizeRole('admin'), userController.getAllUsersController);
 
     // POST /users/register - Create a new user
     app.post('/users/register', userController.createUserController);
@@ -21,8 +22,8 @@ const userRoutes = (app:Express) => {
     // PUT /users/change-password - Change password
     app.put('/users/change-password', authenticateJWT, userController.updateUserPasswordController);
 
-    // DELETE /users/:id - Delete user
-    app.delete('/users/:id', userController.deleteUserController);
+    // DELETE /users/:id - Delete user (Admin only)
+    app.delete('/users/:id', authenticateJWT, authorizeRole('admin'), userController.deleteUserController);
 }
 
 export default userRoutes;

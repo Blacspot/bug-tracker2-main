@@ -7,7 +7,12 @@ export class BugRepository {
   static async getAllBugs(): Promise<Bug[]> {
     try {
       const pool: sql.ConnectionPool = await getPool();
-      const result = await pool.request().query('SELECT * FROM Bugs ORDER BY CreatedAt DESC');
+      const result = await pool.request().query(`
+        SELECT b.*,
+               (SELECT COUNT(*) FROM Comments c WHERE c.BugID = b.BugID) as CommentCount
+        FROM Bugs b
+        ORDER BY b.CreatedAt DESC
+      `);
       return result.recordset;
     } catch (error) {
       console.error('Error fetching bugs:', error);
