@@ -5,7 +5,7 @@ import { authorizeRole } from "../middleware/role.middleware";
 
 const projectRoutes = (app:Express) => {
     // GET /projects - Retrieve all projects (Admin only)
-    app.get('/projects', authenticateJWT, authorizeRole('admin'), projectController.getAllProjectsController);
+    app.get('/projects', authenticateJWT, authorizeRole('admin'),   projectController.getAllProjectsController);
 
     // GET /projects/:id - Retrieve a specific project by ID
     app.get('/projects/:id', projectController.getProjectByIdController);
