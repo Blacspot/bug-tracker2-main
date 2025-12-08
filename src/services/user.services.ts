@@ -225,3 +225,27 @@ export const updateUserPassword = async (userId: number, currentPassword: string
     await UserRepository.updateUser(userId, { PasswordHash: newPasswordHash });
 
 }
+
+// Update user role (admin only)
+export const updateUserRole = async (userId: number, role: string) => {
+    if (!role || typeof role !== 'string') {
+        throw new Error("Role is required and must be a string");
+    }
+
+    const validRoles = ['user', 'admin'];
+    const normalizedRole = role.toLowerCase();
+    if (!validRoles.includes(normalizedRole)) {
+        throw new Error("Invalid role. Must be 'user' or 'admin'");
+    }
+
+    await ensureUserexists(userId);
+
+    const updatedUser = await UserRepository.updateUser(userId, { Role: normalizedRole });
+    if (!updatedUser) {
+        throw new Error("Failed to update user role");
+    }
+
+    // Remove password hash from response
+    const { PasswordHash, ...userResponse } = updatedUser;
+    return userResponse;
+}
