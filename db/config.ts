@@ -15,10 +15,10 @@ dotenv.config();
 
 // Validate that the required environment variables are present
 // This prevents runtime errors from missing database configuration
-assert(process.env.SQL_SERVER, "❌ Missing environment variable: SQL_SERVER");
-assert(process.env.SQL_USER, "❌ Missing environment variable: SQL_USER");
-assert(process.env.SQL_PWD, "❌ Missing environment variable: SQL_PWD");
-assert(process.env.SQL_DB, "❌ Missing environment variable: SQL_DB");
+assert(process.env.SQL_SERVER, " Missing environment variable: SQL_SERVER");
+assert(process.env.SQL_USER, " Missing environment variable: SQL_USER");
+assert(process.env.SQL_PWD, " Missing environment variable: SQL_PWD");
+assert(process.env.SQL_DB, " Missing environment variable: SQL_DB");
 
 /**
  * MSSQL connection pool configuration
@@ -72,24 +72,24 @@ export const getPool = async (): Promise<sql.ConnectionPool> => {
       // Provide helpful error messages for common connection issues
       switch (code) {
         case "ETIMEOUT":
-          console.error("💡 Timeout — check network/firewall settings or server availability.");
+          console.error(" Timeout — check network/firewall settings or server availability.");
           break;
         case "ESOCKET":
-          console.error("💡 Socket error — verify SQL_SERVER in your .env file.");
+          console.error(" Socket error — verify SQL_SERVER in your .env file.");
           break;
         case "ELOGIN":
-          console.error("💡 Authentication failed — verify SQL_USER and SQL_PWD in your .env file.");
+          console.error(" Authentication failed — verify SQL_USER and SQL_PWD in your .env file.");
           break;
         default:
-          console.error("💡 Unknown error — inspect SQL_SERVER, SQL_USER, SQL_PWD, and SQL_DB in your .env file.");
+          console.error(" Unknown error — inspect SQL_SERVER, SQL_USER, SQL_PWD, and SQL_DB in your .env file.");
       }
 
       // Retry connection if attempts remain
       if (attempt < MAX_RETRIES) {
-        console.log(`\x1b[33m[DB]\x1b[0m ⏳ Retrying in ${RETRY_DELAY_MS / 1000}s...`);
+        console.log(`\x1b[33m[DB]\x1b[0m  Retrying in ${RETRY_DELAY_MS / 1000}s...`);
         await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS));
       } else {
-        console.error("\x1b[31m[DB]\x1b[0m 🚨 Max retries reached. Unable to connect to MSSQL.");
+        console.error("\x1b[31m[DB]\x1b[0m  Max retries reached. Unable to connect to MSSQL.");
         throw error;
       }
     }
@@ -107,8 +107,8 @@ export const getPool = async (): Promise<sql.ConnectionPool> => {
 export const closePool = async (): Promise<void> => {
   try {
     await pool.close();
-    console.log("\x1b[33m[DB]\x1b[0m 🔒 MSSQL connection pool closed gracefully.");
+    console.log("\x1b[33m[DB]\x1b[0m  MSSQL connection pool closed gracefully.");
   } catch (err) {
-    console.error("\x1b[31m[DB]\x1b[0m ⚠️ Error closing MSSQL pool:", err);
+    console.error("\x1b[31m[DB]\x1b[0m  Error closing MSSQL pool:", err);
   }
 };
